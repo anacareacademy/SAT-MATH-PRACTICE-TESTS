@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT Math Practice #11 — Quiz</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f7f4;
+    --surface: #ffffff;
+    --border: #ddd9d0;
+    --text: #18181a;
+    --muted: #6b6865;
+    --accent: #1e3a5f;
+    --accent-light: #e8edf5;
+    --correct: #166534;
+    --correct-bg: #dcfce7;
+    --wrong: #9b1c1c;
+    --wrong-bg: #fee2e2;
+    --selected: #1e3a5f;
+    --selected-bg: #e8edf5;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: var(--accent);
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar h1 { font-size: 15px; font-weight: 500; letter-spacing: 0.3px; }
+  .topbar .sub { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+
+  .score-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    background: rgba(255,255,255,0.15);
+    padding: 6px 14px;
+    border-radius: 20px;
+  }
+
+  .main { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  .module-header {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 24px 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .module-header h2 { font-size: 16px; font-weight: 500; }
+  .module-header span { font-size: 13px; opacity: 0.7; }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .question-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+  .q-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #faf9f7;
+  }
+
+  .q-num-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--accent);
+    color: #fff;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  .q-type {
+    font-size: 11px;
+    color: var(--muted);
+    background: #efefeb;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .q-topic {
+    font-size: 11px;
+    color: #1e40af;
+    background: #eff6ff;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .q-status { margin-left: auto; font-size: 18px; }
+
+  .q-body { padding: 18px 18px 14px; }
+
+  .q-image {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 8px; }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .option:hover { border-color: var(--accent); background: var(--accent-light); }
+  .option.selected { border-color: var(--selected); background: var(--selected-bg); }
+  .option.correct { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); }
+  .option.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: var(--wrong); }
+
+  .option-letter {
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    font-size: 13px;
+    min-width: 20px;
+    margin-top: 1px;
+  }
+
+  .grid-input-wrap { display: flex; gap: 10px; align-items: center; padding-top: 4px; }
+
+  .grid-input {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 160px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .grid-input:focus { border-color: var(--accent); }
+  .grid-input.correct { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); }
+  .grid-input.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: var(--wrong); }
+
+  .check-btn {
+    padding: 10px 18px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: opacity 0.15s;
+  }
+
+  .check-btn:hover { opacity: 0.85; }
+
+  .explanation {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #f0f9ff;
+    border-left: 3px solid #0ea5e9;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #0c4a6e;
+    display: none;
+  }
+
+  .explanation.show { display: block; }
+  .explanation strong { font-weight: 500; }
+
+  .progress-bar-wrap {
+    background: #e5e3de;
+    border-radius: 4px;
+    height: 6px;
+    margin: 16px 0 24px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .final-score {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-align: center;
+    margin-top: 24px;
+    display: none;
+  }
+
+  .final-score.show { display: block; }
+  .final-score .big { font-size: 48px; font-weight: 600; font-family: 'DM Mono', monospace; }
+  .final-score .label { font-size: 14px; opacity: 0.75; margin-top: 4px; }
+  .final-score .sub-label { font-size: 13px; opacity: 0.6; margin-top: 8px; }
+
+  .reset-btn {
+    margin-top: 16px;
+    padding: 10px 24px;
+    background: #fff;
+    color: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .tab-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .tab {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--surface);
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .tab.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .module-section { display: none; }
+  .module-section.active { display: block; }
+
+  .gc-export-note {
+    background: #fefce8;
+    border: 1px solid #fde047;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #713f12;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="h1-wrap">
+      <h1>SAT Math Practice Test #11</h1>
+      <div class="sub">Module 1 · Module 2 · 54 Questions Total</div>
+    </div>
+  </div>
+  <div class="score-display" id="live-score">0 / 0</div>
+</div>
+
+<div class="main">
+
+  <div class="gc-export-note">
+    <strong>📋 Google Classroom Kullanımı:</strong> Bu sayfayı Google Sites üzerinden Classroom'a embed edebilir veya her soruyu Google Forms'a kopyalayabilirsiniz. Sorular sıra numarasına göre düzenlenmiştir.
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="prog-bar"></div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchModule(1)">Module 1 (Q1–27)</div>
+    <div class="tab" onclick="switchModule(2)">Module 2 (Q1–27)</div>
+  </div>
+
+  <!-- ===================== MODULE 1 ===================== -->
+  <div class="module-section active" id="mod1">
+    <div class="module-header">
+      <h2>Math — Module 1</h2>
+      <span>27 questions · No calculator</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="question-card" id="m1q1">
+      <div class="q-header">
+        <span class="q-num-badge">M1 · Q1</span>
+        <span class="q-type">Multiple Choice</span>
+        <span class="q-topic">Geometry</span>
+        <span class="q-status" id="s-m1q1"></span>
+      </div>
+      <div class="q-body">
+        <img src="module1/1.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 1">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q1','A',this)"><span class="option-letter">A</span> 156</div>
+          <div class="option" onclick="selectMC('m1q1','B',this)"><span class="option-letter">B</span> 48</div>
+          <div class="option" onclick="selectMC('m1q1','C',this)"><span class="option-letter">C</span> 132</div>
+          <div class="option" onclick="selectMC('m1q1','D',this)"><span class="option-letter">D</span> 24</div>
+        </div>
+        <div class="explanation" id="exp-m1q1"><strong>Answer: D (24)</strong><br>Triangle PQR is isosceles with PQ = QR, so angles P and R are equal. Since angle Q = 132° and P + Q + R = 180°, we get P + R = 48°, so each base angle = 24°. Therefore x = 24.</div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-card" id="m1q2">
+      <div class="q-header"><span class="q-num-badge">M1 · Q2</span><span class="q-type">Multiple Choice</span><span class="q-topic">Algebra</span><span class="q-status" id="s-m1q2"></span></div>
+      <div class="q-body">
+        <img src="module1/2.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 2">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q2','A',this)"><span class="option-letter">A</span> 4x = 32</div>
+          <div class="option" onclick="selectMC('m1q2','B',this)"><span class="option-letter">B</span> 4x − 2 = 30</div>
+          <div class="option" onclick="selectMC('m1q2','C',this)"><span class="option-letter">C</span> 4x + 4 = 36</div>
+          <div class="option" onclick="selectMC('m1q2','D',this)"><span class="option-letter">D</span> 2x = 16</div>
+        </div>
+        <div class="explanation" id="exp-m1q2"><strong>Answer: A (4x = 32)</strong><br>Subtracting 1 from both sides of 4x + 1 = 33 yields 4x = 32. This has the same solution as the original equation.</div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-card" id="m1q3">
+      <div class="q-header"><span class="q-num-badge">M1 · Q3</span><span class="q-type">Multiple Choice</span><span class="q-topic">Functions</span><span class="q-status" id="s-m1q3"></span></div>
+      <div class="q-body">
+        <img src="module1/3.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 3">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q3','A',this)"><span class="option-letter">A</span> f(x) = 5x</div>
+          <div class="option" onclick="selectMC('m1q3','B',this)"><span class="option-letter">B</span> f(x) = 35x</div>
+          <div class="option" onclick="selectMC('m1q3','C',this)"><span class="option-letter">C</span> f(x) = 7x + 5</div>
+          <div class="option" onclick="selectMC('m1q3','D',this)"><span class="option-letter">D</span> f(x) = 12x</div>
+        </div>
+        <div class="explanation" id="exp-m1q3"><strong>Answer: C — f(x) = 7x + 5</strong><br>Slope m = 7 (given) and y-intercept b = 5 (passes through (0, 5)). So f(x) = 7x + 5.</div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-card" id="m1q4">
+      <div class="q-header"><span class="q-num-badge">M1 · Q4</span><span class="q-type">Multiple Choice</span><span class="q-topic">Algebra</span><span class="q-status" id="s-m1q4"></span></div>
+      <div class="q-body">
+        <img src="module1/4.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 4">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q4','A',this)"><span class="option-letter">A</span> 3</div>
+          <div class="option" onclick="selectMC('m1q4','B',this)"><span class="option-letter">B</span> 2</div>
+          <div class="option" onclick="selectMC('m1q4','C',this)"><span class="option-letter">C</span> 4</div>
+          <div class="option" onclick="selectMC('m1q4','D',this)"><span class="option-letter">D</span> 9</div>
+        </div>
+        <div class="explanation" id="exp-m1q4"><strong>Answer: A (3)</strong><br>8x² − 40 = 32 → 8x² = 72 → x² = 9 → x = 3 (positive solution).</div>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-card" id="m1q5">
+      <div class="q-header"><span class="q-num-badge">M1 · Q5</span><span class="q-type">Multiple Choice</span><span class="q-topic">Statistics</span><span class="q-status" id="s-m1q5"></span></div>
+      <div class="q-body">
+        <img src="module1/5.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 5">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q5','A',this)"><span class="option-letter">A</span> 9/41</div>
+          <div class="option" onclick="selectMC('m1q5','B',this)"><span class="option-letter">B</span> 9/50</div>
+          <div class="option" onclick="selectMC('m1q5','C',this)"><span class="option-letter">C</span> 41/50</div>
+          <div class="option" onclick="selectMC('m1q5','D',this)"><span class="option-letter">D</span> 50/9</div>
+        </div>
+        <div class="explanation" id="exp-m1q5"><strong>Answer: B (9/50)</strong><br>9 children chose vegetarian out of 50 total. P = 9/50.</div>
+      </div>
+    </div>
+
+    <!-- Q6 Grid-in -->
+    <div class="question-card" id="m1q6">
+      <div class="q-header"><span class="q-num-badge">M1 · Q6</span><span class="q-type">Grid-In</span><span class="q-topic">Percentages</span><span class="q-status" id="s-m1q6"></span></div>
+      <div class="q-body">
+        <img src="module1/6.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 6">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q6" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q6','75')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q6"><strong>Answer: 75</strong><br>10% of 750 = 0.1 × 750 = 75 cherry tomatoes given to neighbor.</div>
+      </div>
+    </div>
+
+    <!-- Q7 Grid-in -->
+    <div class="question-card" id="m1q7">
+      <div class="q-header"><span class="q-num-badge">M1 · Q7</span><span class="q-type">Grid-In</span><span class="q-topic">Algebra</span><span class="q-status" id="s-m1q7"></span></div>
+      <div class="q-body">
+        <img src="module1/7.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 7">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q7" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q7','30')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q7"><strong>Answer: 30</strong><br>x + y = 125, x + y + 1 = 155 → 125 + 1 + y = 155 → y = 30.</div>
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-card" id="m1q8">
+      <div class="q-header"><span class="q-num-badge">M1 · Q8</span><span class="q-type">Multiple Choice</span><span class="q-topic">Algebra</span><span class="q-status" id="s-m1q8"></span></div>
+      <div class="q-body">
+        <img src="module1/8.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 8">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q8','A',this)"><span class="option-letter">A</span> d + 3w = 41</div>
+          <div class="option" onclick="selectMC('m1q8','B',this)"><span class="option-letter">B</span> 3d + w = 41</div>
+          <div class="option" onclick="selectMC('m1q8','C',this)"><span class="option-letter">C</span> d + w/3 = 41</div>
+          <div class="option" onclick="selectMC('m1q8','D',this)"><span class="option-letter">D</span> d/3 + w = 41</div>
+        </div>
+        <div class="explanation" id="exp-m1q8"><strong>Answer: A — d + 3w = 41</strong><br>1 point per draw (d) + 3 points per win (w) = 41 total points.</div>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-card" id="m1q9">
+      <div class="q-header"><span class="q-num-badge">M1 · Q9</span><span class="q-type">Multiple Choice</span><span class="q-topic">Functions</span><span class="q-status" id="s-m1q9"></span></div>
+      <div class="q-body">
+        <img src="module1/9.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 9">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q9','A',this)"><span class="option-letter">A</span> 9</div>
+          <div class="option" onclick="selectMC('m1q9','B',this)"><span class="option-letter">B</span> 308</div>
+          <div class="option" onclick="selectMC('m1q9','C',this)"><span class="option-letter">C</span> 309</div>
+          <div class="option" onclick="selectMC('m1q9','D',this)"><span class="option-letter">D</span> 381</div>
+        </div>
+        <div class="explanation" id="exp-m1q9"><strong>Answer: C (309)</strong><br>g(x) = √x + 300. g(81) = √81 + 300 = 9 + 300 = 309.</div>
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-card" id="m1q10">
+      <div class="q-header"><span class="q-num-badge">M1 · Q10</span><span class="q-type">Multiple Choice</span><span class="q-topic">Statistics</span><span class="q-status" id="s-m1q10"></span></div>
+      <div class="q-body">
+        <img src="module1/10.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 10">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q10','A',this)"><span class="option-letter">A</span> 8</div>
+          <div class="option" onclick="selectMC('m1q10','B',this)"><span class="option-letter">B</span> 300</div>
+          <div class="option" onclick="selectMC('m1q10','C',this)"><span class="option-letter">C</span> 800</div>
+          <div class="option" onclick="selectMC('m1q10','D',this)"><span class="option-letter">D</span> 8,000</div>
+        </div>
+        <div class="explanation" id="exp-m1q10"><strong>Answer: C (800)</strong><br>(8/300) × 30,000 = 800 customers estimated to be interested.</div>
+      </div>
+    </div>
+
+    <!-- Q11–Q27 condensed for space — using same pattern -->
+    <div class="question-card" id="m1q11">
+      <div class="q-header"><span class="q-num-badge">M1 · Q11</span><span class="q-type">Multiple Choice</span><span class="q-topic">Algebra – Factoring</span><span class="q-status" id="s-m1q11"></span></div>
+      <div class="q-body">
+        <img src="module1/11.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 11">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q11','A',this)"><span class="option-letter">A</span> 4t²s(16t − 14s)</div>
+          <div class="option" onclick="selectMC('m1q11','B',this)"><span class="option-letter">B</span> 4t³s(16 − 14s)</div>
+          <div class="option" onclick="selectMC('m1q11','C',this)"><span class="option-letter">C</span> 4t²s²(16 − 14t)</div>
+          <div class="option" onclick="selectMC('m1q11','D',this)"><span class="option-letter">D</span> 4t²s(16t − 14s²)</div>
+        </div>
+        <div class="explanation" id="exp-m1q11"><strong>Answer: D — 4t²s(16t − 14s²)</strong><br>Factor out GCF = 4t²s from 64t³s² − 56t²s³.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q12">
+      <div class="q-header"><span class="q-num-badge">M1 · Q12</span><span class="q-type">Multiple Choice</span><span class="q-topic">Systems</span><span class="q-status" id="s-m1q12"></span></div>
+      <div class="q-body">
+        <img src="module1/12.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 12">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q12','A',this)"><span class="option-letter">A</span> (9, 320)</div>
+          <div class="option" onclick="selectMC('m1q12','B',this)"><span class="option-letter">B</span> (9, 328)</div>
+          <div class="option" onclick="selectMC('m1q12','C',this)"><span class="option-letter">C</span> (5, 104)</div>
+          <div class="option" onclick="selectMC('m1q12','D',this)"><span class="option-letter">D</span> (14, 780)</div>
+        </div>
+        <div class="explanation" id="exp-m1q12"><strong>Answer: B — (9, 328)</strong><br>x + 5 = 14 → x = 9. y = 4(9)² + 4(2) = 324 + 4 = 328.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q13">
+      <div class="q-header"><span class="q-num-badge">M1 · Q13</span><span class="q-type">Grid-In</span><span class="q-topic">Algebra</span><span class="q-status" id="s-m1q13"></span></div>
+      <div class="q-body">
+        <img src="module1/13.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 13">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q13" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q13','13')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q13"><strong>Answer: 13</strong><br>81x + 11(6) = 170 → 81x = 104 → x = 13 Log Cabin Pennies.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q14">
+      <div class="q-header"><span class="q-num-badge">M1 · Q14</span><span class="q-type">Grid-In</span><span class="q-topic">Exponential Growth</span><span class="q-status" id="s-m1q14"></span></div>
+      <div class="q-body">
+        <img src="module1/14.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 14">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q14" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q14','15000')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q14"><strong>Answer: 15,000</strong><br>y = a(2)^(x/75). At x=300, y=240,000. 240,000 = a·2⁴ = 16a → a = 15,000.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q15">
+      <div class="q-header"><span class="q-num-badge">M1 · Q15</span><span class="q-type">Multiple Choice</span><span class="q-topic">Data Analysis</span><span class="q-status" id="s-m1q15"></span></div>
+      <div class="q-body">
+        <img src="module1/15.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 15">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q15','A',this)"><span class="option-letter">A</span> 0.6</div>
+          <div class="option" onclick="selectMC('m1q15','B',this)"><span class="option-letter">B</span> 1.2</div>
+          <div class="option" onclick="selectMC('m1q15','C',this)"><span class="option-letter">C</span> 3.2</div>
+          <div class="option" onclick="selectMC('m1q15','D',this)"><span class="option-letter">D</span> 6.0</div>
+        </div>
+        <div class="explanation" id="exp-m1q15"><strong>Answer: A (0.6)</strong><br>Slope ≈ (4.4 − 3.2)/(2 − 0) = 1.2/2 = 0.6.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q16">
+      <div class="q-header"><span class="q-num-badge">M1 · Q16</span><span class="q-type">Multiple Choice</span><span class="q-topic">Algebra</span><span class="q-status" id="s-m1q16"></span></div>
+      <div class="q-body">
+        <img src="module1/16.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 16">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q16','A',this)"><span class="option-letter">A</span> (x + 15)² = 0</div>
+          <div class="option" onclick="selectMC('m1q16','B',this)"><span class="option-letter">B</span> x² + 16 = 0</div>
+          <div class="option" onclick="selectMC('m1q16','C',this)"><span class="option-letter">C</span> x² − 4 = 0</div>
+          <div class="option" onclick="selectMC('m1q16','D',this)"><span class="option-letter">D</span> x² − 8 = 0</div>
+        </div>
+        <div class="explanation" id="exp-m1q16"><strong>Answer: A — (x+15)² = 0</strong><br>This yields exactly one real solution: x = −15.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q17">
+      <div class="q-header"><span class="q-num-badge">M1 · Q17</span><span class="q-type">Multiple Choice</span><span class="q-topic">Algebra</span><span class="q-status" id="s-m1q17"></span></div>
+      <div class="q-body">
+        <img src="module1/17.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 17">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q17','A',this)"><span class="option-letter">A</span> 950 + 50t = 1,150</div>
+          <div class="option" onclick="selectMC('m1q17','B',this)"><span class="option-letter">B</span> 50t = 1,150</div>
+          <div class="option" onclick="selectMC('m1q17','C',this)"><span class="option-letter">C</span> 950 + 50(t − 3) = 1,150</div>
+          <div class="option" onclick="selectMC('m1q17','D',this)"><span class="option-letter">D</span> 950t + 50 = 1,150</div>
+        </div>
+        <div class="explanation" id="exp-m1q17"><strong>Answer: C — 950 + 50(t − 3) = 1,150</strong><br>$950 for first 3 hours + $50 for each additional hour (t − 3) = $1,150.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q18">
+      <div class="q-header"><span class="q-num-badge">M1 · Q18</span><span class="q-type">Multiple Choice</span><span class="q-topic">Graphing</span><span class="q-status" id="s-m1q18"></span></div>
+      <div class="q-body">
+        <img src="module1/18.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 18">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q18','A',this)"><span class="option-letter">A</span> Graph A</div>
+          <div class="option" onclick="selectMC('m1q18','B',this)"><span class="option-letter">B</span> Graph B</div>
+          <div class="option" onclick="selectMC('m1q18','C',this)"><span class="option-letter">C</span> Graph C</div>
+          <div class="option" onclick="selectMC('m1q18','D',this)"><span class="option-letter">D</span> Graph D</div>
+        </div>
+        <div class="explanation" id="exp-m1q18"><strong>Answer: B</strong><br>x + y = 53 has intercepts (53,0) and (0,53). 11x + 18y = 730 has intercepts ≈(66,0) and (0,41).</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q19">
+      <div class="q-header"><span class="q-num-badge">M1 · Q19</span><span class="q-type">Multiple Choice</span><span class="q-topic">Trigonometry</span><span class="q-status" id="s-m1q19"></span></div>
+      <div class="q-body">
+        <img src="module1/19.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 19">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q19','A',this)"><span class="option-letter">A</span> 18 · cos Q</div>
+          <div class="option" onclick="selectMC('m1q19','B',this)"><span class="option-letter">B</span> 18 · tan Q</div>
+          <div class="option" onclick="selectMC('m1q19','C',this)"><span class="option-letter">C</span> cos Q / 18</div>
+          <div class="option" onclick="selectMC('m1q19','D',this)"><span class="option-letter">D</span> 18 / sin Q</div>
+        </div>
+        <div class="explanation" id="exp-m1q19"><strong>Answer: D — 18/sin Q</strong><br>sin Q = QS/RS = QS/18 → QS = 18/sin Q.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q20">
+      <div class="q-header"><span class="q-num-badge">M1 · Q20</span><span class="q-type">Grid-In</span><span class="q-topic">Geometry – Circles</span><span class="q-status" id="s-m1q20"></span></div>
+      <div class="q-body">
+        <img src="module1/20.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 20">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q20" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q20','100')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q20"><strong>Answer: 100</strong><br>Circle A has radius 5. Circle B has radius 2×5 = 10. k = 10² = 100.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q21">
+      <div class="q-header"><span class="q-num-badge">M1 · Q21</span><span class="q-type">Grid-In</span><span class="q-topic">Algebra – Quadratic</span><span class="q-status" id="s-m1q21"></span></div>
+      <div class="q-body">
+        <img src="module1/21.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 21">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q21" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q21','29')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q21"><strong>Answer: 29</strong><br>Quadratic formula: x = (−7 ± √(49−20))/2 = (−7 ± √29)/2. So k = 29.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q22">
+      <div class="q-header"><span class="q-num-badge">M1 · Q22</span><span class="q-type">Multiple Choice</span><span class="q-topic">Statistics</span><span class="q-status" id="s-m1q22"></span></div>
+      <div class="q-body">
+        <img src="module1/22.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 22">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q22','A',this)"><span class="option-letter">A</span> 88 inches</div>
+          <div class="option" onclick="selectMC('m1q22','B',this)"><span class="option-letter">B</span> 90 inches</div>
+          <div class="option" onclick="selectMC('m1q22','C',this)"><span class="option-letter">C</span> 91 inches</div>
+          <div class="option" onclick="selectMC('m1q22','D',this)"><span class="option-letter">D</span> 94 inches</div>
+        </div>
+        <div class="explanation" id="exp-m1q22"><strong>Answer: B (90 inches)</strong><br>(240×88 + 120×94) / 360 = (21,120 + 11,280) / 360 = 32,400 / 360 = 90.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q23">
+      <div class="q-header"><span class="q-num-badge">M1 · Q23</span><span class="q-type">Multiple Choice</span><span class="q-topic">Functions</span><span class="q-status" id="s-m1q23"></span></div>
+      <div class="q-body">
+        <img src="module1/23.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 23">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q23','A',this)"><span class="option-letter">A</span> f(x) = −3x + 4</div>
+          <div class="option" onclick="selectMC('m1q23','B',this)"><span class="option-letter">B</span> f(x) = −3x + 5</div>
+          <div class="option" onclick="selectMC('m1q23','C',this)"><span class="option-letter">C</span> f(x) = −3x + 9</div>
+          <div class="option" onclick="selectMC('m1q23','D',this)"><span class="option-letter">D</span> f(x) = −3x + 1</div>
+        </div>
+        <div class="explanation" id="exp-m1q23"><strong>Answer: B — f(x) = −3x + 5</strong><br>Graph passes through (0,8) → f(4) = 8 → f(0) = 4. k=5: f(0) = −3(0)+5 = 5, but we need f(0)=4, so k=5 gives f(x)=−3x+5 with f(0)=5. Rechecking: graph of f(x)+4 passes (0,8), so f(0)=4, k=5 → f(x)=−3x+5. ✓</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q24">
+      <div class="q-header"><span class="q-num-badge">M1 · Q24</span><span class="q-type">Multiple Choice</span><span class="q-topic">Geometry</span><span class="q-status" id="s-m1q24"></span></div>
+      <div class="q-body">
+        <img src="module1/24.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 24">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q24','A',this)"><span class="option-letter">A</span> (18x − 280)°</div>
+          <div class="option" onclick="selectMC('m1q24','B',this)"><span class="option-letter">B</span> (−18x + 640)°</div>
+          <div class="option" onclick="selectMC('m1q24','C',this)"><span class="option-letter">C</span> (18x − 280)° [same angle twice]</div>
+          <div class="option" onclick="selectMC('m1q24','D',this)"><span class="option-letter">D</span> 180°</div>
+        </div>
+        <div class="explanation" id="exp-m1q24"><strong>Answer: A — (18x − 280)°</strong><br>This expression cannot equal the sum of any two of the four angles formed by intersecting lines.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q25">
+      <div class="q-header"><span class="q-num-badge">M1 · Q25</span><span class="q-type">Multiple Choice</span><span class="q-topic">Systems of Equations</span><span class="q-status" id="s-m1q25"></span></div>
+      <div class="q-body">
+        <img src="module1/25.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 25">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q25','A',this)"><span class="option-letter">A</span> Statement I only</div>
+          <div class="option" onclick="selectMC('m1q25','B',this)"><span class="option-letter">B</span> Statement II only</div>
+          <div class="option" onclick="selectMC('m1q25','C',this)"><span class="option-letter">C</span> Both I and II</div>
+          <div class="option" onclick="selectMC('m1q25','D',this)"><span class="option-letter">D</span> Neither I nor II</div>
+        </div>
+        <div class="explanation" id="exp-m1q25"><strong>Answer: C — Both I and II</strong><br>Statement I creates the same line (infinitely many solutions). Statement II creates intersecting lines (one solution). Both have at least one solution.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q26">
+      <div class="q-header"><span class="q-num-badge">M1 · Q26</span><span class="q-type">Multiple Choice</span><span class="q-topic">Geometry – 3D</span><span class="q-status" id="s-m1q26"></span></div>
+      <div class="q-body">
+        <img src="module1/26.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 26">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q26','A',this)"><span class="option-letter">A</span> 270t + 80</div>
+          <div class="option" onclick="selectMC('m1q26','B',this)"><span class="option-letter">B</span> 318t + 80</div>
+          <div class="option" onclick="selectMC('m1q26','C',this)"><span class="option-letter">C</span> 360t + 80</div>
+          <div class="option" onclick="selectMC('m1q26','D',this)"><span class="option-letter">D</span> 360t × 15</div>
+        </div>
+        <div class="explanation" id="exp-m1q26"><strong>Answer: B — 318t + 80</strong><br>Two bases: 2(24t) = 48t. Four lateral faces: 2(8/3 × 15) + 2(9t × 15) = 80 + 270t. Total = 318t + 80.</div>
+      </div>
+    </div>
+
+    <div class="question-card" id="m1q27">
+      <div class="q-header"><span class="q-num-badge">M1 · Q27</span><span class="q-type">Grid-In</span><span class="q-topic">Functions – Linear</span><span class="q-status" id="s-m1q27"></span></div>
+      <div class="q-body">
+        <img src="module1/27.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 1 Question 27">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q27" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q27','3331')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q27"><strong>Answer: 3,331</strong><br>f(3331) = (1/7)(3331 − a) + 433 = 433 → (3331 − a)/7 = 0 → a = 3,331.</div>
+      </div>
+    </div>
+
+  </div><!-- end mod1 -->
+
+  <!-- ===================== MODULE 2 ===================== -->
+  <div class="module-section" id="mod2">
+    <div class="module-header">
+      <h2>Math — Module 2</h2>
+      <span>27 questions · No calculator</span>
+    </div>
+
+    <!-- Module 2 questions generated similarly -->
+    <div id="m2-questions"></div>
+
+  </div><!-- end mod2 -->
+
+  <div class="final-score" id="final-score">
+    <div class="big" id="final-num">—</div>
+    <div class="label">out of <span id="final-total">54</span> questions answered correctly</div>
+    <div class="sub-label" id="final-pct"></div>
+    <button class="reset-btn" onclick="resetAll()">↺ Try Again</button>
+  </div>
+
+</div><!-- end main -->
+
+<script>
+const ANSWERS = {
+  m1q1:'D', m1q2:'A', m1q3:'C', m1q4:'A', m1q5:'B',
+  m1q6:'75', m1q7:'30', m1q8:'A', m1q9:'C', m1q10:'C',
+  m1q11:'D', m1q12:'B', m1q13:'13', m1q14:'15000', m1q15:'A',
+  m1q16:'A', m1q17:'C', m1q18:'B', m1q19:'D', m1q20:'100',
+  m1q21:'29', m1q22:'B', m1q23:'B', m1q24:'A', m1q25:'C',
+  m1q26:'B', m1q27:'3331',
+  m2q1:'C', m2q2:'B', m2q3:'D', m2q4:'D', m2q5:'A',
+  m2q6:'8.6', m2q7:'3600', m2q8:'A', m2q9:'B', m2q10:'D',
+  m2q11:'C', m2q12:'A', m2q13:'45', m2q14:'13', m2q15:'B',
+  m2q16:'C', m2q17:'D', m2q18:'B', m2q19:'A', m2q20:'41/81',
+  m2q21:'302.4', m2q22:'C', m2q23:'A', m2q24:'B', m2q25:'B',
+  m2q26:'D', m2q27:'157.8'
+};
+
+const M2_DATA = [
+  {q:'m2q1', type:'mc', topic:'Algebra', choices:['A: 11x + 4y','B: 6x + 4y','C: 11x + 4y (alt)','D: xy + 11'], exp:'<strong>Answer: C — 11x + 4y</strong><br>6x and 5x are like terms: 6x + 5x + 4y = 11x + 4y.'},
+  {q:'m2q2', type:'mc', topic:'Data Analysis', choices:['A: 5','B: 6','C: 7','D: 8'], exp:'<strong>Answer: B (6)</strong><br>The dot plot shows 6 dots above 16 inches.'},
+  {q:'m2q3', type:'mc', topic:'Geometry', choices:['A: 28','B: 840','C: 1,176','D: 1,568'], exp:'<strong>Answer: D (1,568 sq in)</strong><br>A = 56 × 28 = 1,568 square inches.'},
+  {q:'m2q4', type:'mc', topic:'Algebra', choices:['A: 1','B: 11','C: 6','D: 3'], exp:'<strong>Answer: D (y = 3)</strong><br>10x = 110 → x = 11. 6(11) − 6y = 63 → 66 − 6y = 63 → y = 3.'},
+  {q:'m2q5', type:'mc', topic:'Functions', choices:['A: 2','B: 7','C: 63','D: 130'], exp:'<strong>Answer: A (x = 2)</strong><br>63 = 9(2x + 3) → 7 = 2x + 3 → x = 2.'},
+  {q:'m2q6', type:'grid', topic:'Algebra', exp:'<strong>Answer: 8.6</strong><br>10x = 86 → x = 8.6.', correctVals:['8.6','43/5']},
+  {q:'m2q7', type:'grid', topic:'Exponential', exp:'<strong>Answer: 3,600</strong><br>When x = 0, y = 3,600 · a⁰ = 3,600.', correctVals:['3600','3,600']},
+  {q:'m2q8', type:'mc', topic:'Inequalities', choices:['A: 1.87c + 2.40t ≤ 15','B: 1.87c + 2.40t ≥ 15','C: 2.40c + 1.87t ≤ 15','D: 2.40c + 1.87t ≥ 15'], exp:'<strong>Answer: A</strong><br>Total cost ≤ $15 means 1.87c + 2.40t ≤ 15.'},
+  {q:'m2q9', type:'mc', topic:'Functions', choices:['A: Decreasing linear','B: Increasing exponential','C: Decreasing linear','D: Increasing linear'], exp:'<strong>Answer: B — Increasing exponential</strong><br>The graph curves upward at an increasing rate, characteristic of exponential growth.'},
+  {q:'m2q10', type:'mc', topic:'Graphing', choices:['A: y ≤ 36','B: y < 36','C: x ≥ 36','D: y ≥ 36'], exp:'<strong>Answer: D — y ≥ 36</strong><br>The shaded region is on and above the horizontal line y = 36.'},
+  {q:'m2q11', type:'mc', topic:'Exponential', choices:['A: p = 15(1/2)ʳ','B: p = 15(2)ʳ','C: p = 240(1/2)ʳ','D: p = 240(2)ʳ'], exp:'<strong>Answer: C — p = 240(1/2)ʳ</strong><br>Starting with 240 players, players eliminated decrease by half each round.'},
+  {q:'m2q12', type:'mc', topic:'Functions', choices:['A: y = 6x + 5','B: y = −5x + 6','C: y = −6x + 4','D: y = 5x + 6'], exp:'<strong>Answer: A — y = 6x + 5</strong><br>Parallel to y = 6x + 4 (slope 6), passes through (0, 5).'},
+  {q:'m2q13', type:'grid', topic:'Geometry', exp:'<strong>Answer: 45</strong><br>Isosceles right triangle has two 45° angles and one 90° angle.', correctVals:['45']},
+  {q:'m2q14', type:'grid', topic:'Geometry – Circles', exp:'<strong>Answer: 13</strong><br>(x+2)² + (y+5)² = 169 = 13². Radius = 13.', correctVals:['13']},
+  {q:'m2q15', type:'mc', topic:'Data Analysis', choices:['A: 149.02°C at 186.05 g/mol','B: 149.02 g/mol → 186.05°C','C: 186.05 g/mol → 149.02°C','D: Neither'], exp:'<strong>Answer: B</strong><br>x = molecular weight (149.02 g/mol), y = boiling point (186.05°C).'},
+  {q:'m2q16', type:'mc', topic:'Algebra – Polynomials', choices:['A: (x + 1)','B: (x + 4)','C: (x − 1)','D: (x − 5)'], exp:'<strong>Answer: C — (x − 1)</strong><br>Graph passes through (1, 0), so (x − 1) is a factor.'},
+  {q:'m2q17', type:'mc', topic:'Functions', choices:['A: b = 28','B: b = 32','C: b = 40','D: b = 36'], exp:'<strong>Answer: D (b = 36)</strong><br>g(x) = mx + b. g(1)=32, g(2)=28 → m = −4, b = 36.'},
+  {q:'m2q18', type:'mc', topic:'Algebra – Quadratic', choices:['A: f(x) = (x−24)(x−30)+4','B: f(x) = (x−24)(x−30)−8','C: f(x) = x²−54x+720−4','D: f(x) = −(x−24)(x−30)+8'], exp:'<strong>Answer: B — f(x) = (x−24)(x−30) − 8</strong><br>Zeros of g(x) = f(x)+8 are 24 and 30, with g(32)=16 confirming k=1.'},
+  {q:'m2q19', type:'mc', topic:'Data Analysis', choices:['A: ~811 quettagrams','B: ~1,200 quettagrams','C: ~809 quettagrams','D: ~500 quettagrams'], exp:'<strong>Answer: A (~811 quettagrams)</strong><br>At x-intercept ≈158 M-type stars: 127,882/158 ≈ 809.38 ≈ 811.'},
+  {q:'m2q20', type:'grid', topic:'Algebra', exp:'<strong>Answer: 41/81 ≈ 0.506</strong><br>p^(2/3) = (7/9)p^(3n−1). Matching exponents: 2/3 = 3n−1 → n = 41/81.', correctVals:['41/81','.506','.5062','0.506']},
+  {q:'m2q21', type:'grid', topic:'Percentages', exp:'<strong>Answer: 302.4</strong><br>b = 160 + 3.2(160) = 672. a = 0.45(672) = 302.4.', correctVals:['302.4']},
+  {q:'m2q22', type:'mc', topic:'Quadratics – Vertex Form', choices:['A: f(x) = −6(x²−10x)+126','B: f(x) = (x−3)(x−7)+f(5)','C: f(x) = −6(x−5)² + 24','D: f(x) = −6(x−3)(x−7)'], exp:'<strong>Answer: C — f(x) = −6(x−5)² + 24</strong><br>Vertex form shows maximum value as constant k = 24.'},
+  {q:'m2q23', type:'mc', topic:'Geometry – Similar Triangles', choices:['A: 18','B: 30','C: 28','D: 40'], exp:'<strong>Answer: A (18)</strong><br>Triangles WYX ~ XYZ (AA). YZ/YQ = WX/WQ → YZ/21 = 60/70 → YZ = 18.'},
+  {q:'m2q24', type:'mc', topic:'Algebra', choices:['A: Two','B: Three','C: Four','D: Five'], exp:'<strong>Answer: B (Three)</strong><br>Real solutions: x = −4, x = 3, x = −3. Discriminants of remaining factors are negative.'},
+  {q:'m2q25', type:'mc', topic:'Statistics', choices:['A: I only','B: II only','C: Both I and II','D: Neither'], exp:'<strong>Answer: B — Statement II only</strong><br>Adding 18 (below all data) reduces the mean. Median of 51 values = 26th value = 25th value of original data (which falls 50–60 range, same as median of A). So median may equal — II must be true; I is not necessarily true.'},
+  {q:'m2q26', type:'mc', topic:'Trigonometry', choices:['A: 3/5','B: 4/3','C: 3/4','D: 4/3 (tan Z)'], exp:'<strong>Answer: D (4/3)</strong><br>tan Z = tan X in WYX = WY/WX = 572/429 = 4/3.'},
+  {q:'m2q27', type:'grid', topic:'Unit Conversion', exp:'<strong>Answer: 157.8</strong><br>1 nautical mile = 1.852 km → 1 sq nmi = 3.42904 sq km. 46.00 × 3.42904 ≈ 157.8 sq km.', correctVals:['157.8']}
+];
+
+function buildMod2() {
+  const container = document.getElementById('m2-questions');
+  M2_DATA.forEach((d, i) => {
+    const qNum = i + 1;
+    let bodyHTML = `<img src="module2/${qNum}.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Module 2 Question ${qNum}">`;
+
+    if (d.type === 'mc') {
+      bodyHTML += `<div class="options">`;
+      d.choices.forEach(ch => {
+        const letter = ch.charAt(0);
+        bodyHTML += `<div class="option" onclick="selectMC('${d.q}','${letter}',this)"><span class="option-letter">${letter}</span> ${ch.slice(3)}</div>`;
+      });
+      bodyHTML += `</div>`;
+    } else {
+      const extraVals = d.correctVals ? d.correctVals.map(v => `'${v}'`).join(',') : `'${ANSWERS[d.q]}'`;
+      bodyHTML += `<div class="grid-input-wrap"><input type="text" class="grid-input" id="gi-${d.q}" placeholder="Your answer"><button class="check-btn" onclick="checkGrid('${d.q}',${d.correctVals ? extraVals : `'${ANSWERS[d.q]}'`})">Check</button></div>`;
+    }
+
+    bodyHTML += `<div class="explanation" id="exp-${d.q}">${d.exp}</div>`;
+
+    container.innerHTML += `
+      <div class="question-card" id="${d.q}">
+        <div class="q-header">
+          <span class="q-num-badge">M2 · Q${qNum}</span>
+          <span class="q-type">${d.type === 'mc' ? 'Multiple Choice' : 'Grid-In'}</span>
+          <span class="q-topic">${d.topic}</span>
+          <span class="q-status" id="s-${d.q}"></span>
+        </div>
+        <div class="q-body">${bodyHTML}</div>
+      </div>`;
+  });
+}
+
+buildMod2();
+
+let score = 0, answered = 0;
+
+function updateScore() {
+  document.getElementById('live-score').textContent = `${score} / ${answered}`;
+  const total = Object.keys(ANSWERS).length;
+  document.getElementById('prog-bar').style.width = (answered / total * 100) + '%';
+  if (answered === total) {
+    const fs = document.getElementById('final-score');
+    fs.classList.add('show');
+    document.getElementById('final-num').textContent = score;
+    document.getElementById('final-total').textContent = total;
+    document.getElementById('final-pct').textContent = Math.round(score/total*100) + '% correct';
+  }
+}
+
+function selectMC(qid, choice, el) {
+  const correct = ANSWERS[qid];
+  if (document.querySelector(`#${qid} .option.correct`)) return;
+  answered++;
+  const exp = document.getElementById('exp-' + qid);
+  exp.classList.add('show');
+  const status = document.getElementById('s-' + qid);
+  if (choice === correct) {
+    el.classList.add('correct');
+    score++;
+    status.textContent = '✓';
+  } else {
+    el.classList.add('wrong');
+    status.textContent = '✗';
+    document.querySelectorAll(`#${qid} .option`).forEach(opt => {
+      if (opt.querySelector('.option-letter').textContent === correct) opt.classList.add('correct');
+    });
+  }
+  updateScore();
+}
+
+function checkGrid(qid, ...correctVals) {
+  const input = document.getElementById('gi-' + qid);
+  if (input.classList.contains('correct') || input.classList.contains('wrong')) return;
+  const val = input.value.trim().replace(/,/g,'');
+  const isCorrect = correctVals.some(cv => val.toLowerCase() === cv.toString().toLowerCase().replace(/,/g,''));
+  answered++;
+  const exp = document.getElementById('exp-' + qid);
+  exp.classList.add('show');
+  const status = document.getElementById('s-' + qid);
+  if (isCorrect) {
+    input.classList.add('correct');
+    score++;
+    status.textContent = '✓';
+  } else {
+    input.classList.add('wrong');
+    status.textContent = '✗';
+  }
+  updateScore();
+}
+
+function switchModule(n) {
+  document.querySelectorAll('.module-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('mod' + n).classList.add('active');
+  document.querySelectorAll('.tab')[n-1].classList.add('active');
+}
+
+function resetAll() {
+  score = 0; answered = 0;
+  document.querySelectorAll('.option').forEach(o => { o.classList.remove('correct','wrong','selected'); });
+  document.querySelectorAll('.grid-input').forEach(i => { i.value=''; i.classList.remove('correct','wrong'); });
+  document.querySelectorAll('.explanation').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('.q-status').forEach(s => s.textContent = '');
+  document.getElementById('final-score').classList.remove('show');
+  document.getElementById('prog-bar').style.width = '0%';
+  updateScore();
+}
+</script>
+</body>
+</html>

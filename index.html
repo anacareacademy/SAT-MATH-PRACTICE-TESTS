@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT Math Practice Tests</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0f1117;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: #4ade80;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  h1 span { color: #4ade80; }
+
+  header p {
+    color: #9ca3af;
+    font-size: 15px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .card {
+    background: #1a1d27;
+    border: 1px solid #2d3148;
+    border-radius: 14px;
+    padding: 24px 20px;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    border-color: #4ade80;
+    background: #1e2235;
+    transform: translateY(-2px);
+  }
+
+  .card.available { cursor: pointer; }
+  .card.locked { cursor: default; opacity: 0.4; }
+
+  .card-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #4ade80;
+    letter-spacing: 2px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .card-sub {
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    width: fit-content;
+    margin-top: 4px;
+  }
+
+  .badge.available {
+    background: #052e16;
+    color: #4ade80;
+    border: 1px solid #166534;
+  }
+
+  .badge.locked {
+    background: #1f2937;
+    color: #6b7280;
+    border: 1px solid #374151;
+  }
+
+  .card.available::after {
+    content: '→';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #4ade80;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .card.available:hover::after { opacity: 1; }
+
+  footer {
+    margin-top: 60px;
+    font-size: 12px;
+    color: #4b5563;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Anaca Academy</div>
+  <h1>SAT Math <span>Practice Tests</span></h1>
+  <p>Digital SAT · Math Modules · Interactive Quiz</p>
+</header>
+
+<div class="grid">
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 01</div>
+    <div class="card-title">Practice Test #1</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 02</div>
+    <div class="card-title">Practice Test #2</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 03</div>
+    <div class="card-title">Practice Test #3</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 04</div>
+    <div class="card-title">Practice Test #4</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 05</div>
+    <div class="card-title">Practice Test #5</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 06</div>
+    <div class="card-title">Practice Test #6</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 07</div>
+    <div class="card-title">Practice Test #7</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 08</div>
+    <div class="card-title">Practice Test #8</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 09</div>
+    <div class="card-title">Practice Test #9</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 10</div>
+    <div class="card-title">Practice Test #10</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <a href="practice-11/index.html" class="card available">
+    <div class="card-num">PRACTICE · 11</div>
+    <div class="card-title">Practice Test #11</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge available">✓ Available</div>
+  </a>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 12</div>
+    <div class="card-title">Practice Test #12</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 13</div>
+    <div class="card-title">Practice Test #13</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 14</div>
+    <div class="card-title">Practice Test #14</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 15</div>
+    <div class="card-title">Practice Test #15</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 16</div>
+    <div class="card-title">Practice Test #16</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 17</div>
+    <div class="card-title">Practice Test #17</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 18</div>
+    <div class="card-title">Practice Test #18</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 19</div>
+    <div class="card-title">Practice Test #19</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 20</div>
+    <div class="card-title">Practice Test #20</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 21</div>
+    <div class="card-title">Practice Test #21</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 22</div>
+    <div class="card-title">Practice Test #22</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 23</div>
+    <div class="card-title">Practice Test #23</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 24</div>
+    <div class="card-title">Practice Test #24</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 25</div>
+    <div class="card-title">Practice Test #25</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 26</div>
+    <div class="card-title">Practice Test #26</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 27</div>
+    <div class="card-title">Practice Test #27</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 28</div>
+    <div class="card-title">Practice Test #28</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 29</div>
+    <div class="card-title">Practice Test #29</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+  <div class="card locked">
+    <div class="card-num">PRACTICE · 30</div>
+    <div class="card-title">Practice Test #30</div>
+    <div class="card-sub">54 questions · Module 1 & 2</div>
+    <div class="badge locked">🔒 Coming soon</div>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 Anaca Academy · College Board Digital SAT Practice
+</footer>
+
+</body>
+</html>
