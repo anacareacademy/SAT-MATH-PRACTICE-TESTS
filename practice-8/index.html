@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT Math Practice Test #8</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#f8f7f4;--surface:#fff;--border:#ddd9d0;--text:#18181a;--muted:#6b6865;--accent:#1e3a5f;--accent-light:#e8edf5}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  .topbar{background:var(--accent);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+  .topbar h1{font-size:15px;font-weight:500}
+  .topbar .sub{font-size:12px;opacity:0.7;margin-top:2px}
+  .score-display{font-family:'DM Mono',monospace;font-size:14px;background:rgba(255,255,255,0.15);padding:6px 14px;border-radius:20px}
+  .main{max-width:900px;margin:0 auto;padding:24px 16px 60px}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-size:14px;font-weight:500;margin-bottom:20px;padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+  .back-btn:hover{background:var(--accent-light)}
+  .module-header{background:var(--accent);color:#fff;border-radius:10px;padding:16px 20px;margin:24px 0 16px;display:flex;align-items:center;justify-content:space-between}
+  .module-header h2{font-size:16px;font-weight:500}
+  .module-header span{font-size:13px;opacity:0.7}
+  .question-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden}
+  .q-header{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);background:#faf9f7}
+  .q-num-badge{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:var(--accent);color:#fff;padding:3px 9px;border-radius:20px}
+  .q-type{font-size:11px;color:var(--muted);background:#efefeb;padding:2px 8px;border-radius:20px;font-family:'DM Mono',monospace}
+  .q-status{margin-left:auto;font-size:18px}
+  .q-body{padding:18px 18px 14px}
+  .options{display:flex;flex-direction:column;gap:8px}
+  .option{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s;font-size:14px}
+  .option:hover{border-color:var(--accent);background:var(--accent-light)}
+  .option.correct{border-color:#166534;background:#dcfce7;color:#166534}
+  .option.wrong{border-color:#9b1c1c;background:#fee2e2;color:#9b1c1c}
+  .option-letter{font-family:'DM Mono',monospace;font-weight:500;font-size:13px;min-width:20px}
+  .grid-input-wrap{display:flex;gap:10px;align-items:center;padding-top:4px}
+  .grid-input{font-family:'DM Mono',monospace;font-size:16px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;width:160px;outline:none}
+  .grid-input:focus{border-color:var(--accent)}
+  .grid-input.correct{border-color:#166534;background:#dcfce7;color:#166534}
+  .grid-input.wrong{border-color:#9b1c1c;background:#fee2e2;color:#9b1c1c}
+  .check-btn{padding:10px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500}
+  .explanation{margin-top:12px;padding:12px 14px;background:#f0f9ff;border-left:3px solid #0ea5e9;border-radius:0 8px 8px 0;font-size:13px;color:#0c4a6e;display:none}
+  .explanation.show{display:block}
+  .progress-bar-wrap{background:#e5e3de;border-radius:4px;height:6px;margin:16px 0 24px;overflow:hidden}
+  .progress-bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width 0.4s ease;width:0%}
+  .tab-bar{display:flex;gap:8px;margin-bottom:4px}
+  .tab{padding:8px 18px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;background:var(--surface);color:var(--muted);transition:all 0.15s}
+  .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .module-section{display:none}
+  .module-section.active{display:block}
+  .final-score{background:var(--accent);color:#fff;border-radius:12px;padding:28px 24px;text-align:center;margin-top:24px;display:none}
+  .final-score.show{display:block}
+  .final-score .big{font-size:48px;font-weight:600;font-family:'DM Mono',monospace}
+  .reset-btn{margin-top:16px;padding:10px 24px;background:#fff;color:var(--accent);border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div><h1>SAT Math Practice Test #8</h1><div class="sub">Module 1 · Module 2 · 54 Questions</div></div>
+  <div class="score-display" id="live-score">0 / 0</div>
+</div>
+<div class="main">
+  <a href="../index.html" class="back-btn">← Back to All Tests</a>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar"></div></div>
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchModule(1)">Module 1 (Q1–27)</div>
+    <div class="tab" onclick="switchModule(2)">Module 2 (Q1–27)</div>
+  </div>
+  <div class="module-section active" id="mod1">
+    <div class="module-header"><h2>Math — Module 1</h2><span>27 questions</span></div>
+    
+    <div class="question-card" id="m1q1">
+      <div class="q-header"><span class="q-num-badge">M1 · Q1</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q1"></span></div>
+      <div class="q-body">
+        <img src="math_module1/1.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q1">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q1','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q1','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q1','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q1','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q1"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q2">
+      <div class="q-header"><span class="q-num-badge">M1 · Q2</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q2"></span></div>
+      <div class="q-body">
+        <img src="math_module1/2.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q2">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q2','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q2','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q2','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q2','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q2"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q3">
+      <div class="q-header"><span class="q-num-badge">M1 · Q3</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q3"></span></div>
+      <div class="q-body">
+        <img src="math_module1/3.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q3">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q3','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q3','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q3','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q3','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q3"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q4">
+      <div class="q-header"><span class="q-num-badge">M1 · Q4</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q4"></span></div>
+      <div class="q-body">
+        <img src="math_module1/4.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q4">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q4','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q4','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q4','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q4','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q4"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q5">
+      <div class="q-header"><span class="q-num-badge">M1 · Q5</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q5"></span></div>
+      <div class="q-body">
+        <img src="math_module1/5.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q5">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q5','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q5','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q5','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q5','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q5"><strong>Answer: A</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q6">
+      <div class="q-header"><span class="q-num-badge">M1 · Q6</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m1q6"></span></div>
+      <div class="q-body">
+        <img src="math_module1/6.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q6">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q6" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q6')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q6"><strong>Answer: .2</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q7">
+      <div class="q-header"><span class="q-num-badge">M1 · Q7</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m1q7"></span></div>
+      <div class="q-body">
+        <img src="math_module1/7.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q7">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q7" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q7')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q7"><strong>Answer: 240</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q8">
+      <div class="q-header"><span class="q-num-badge">M1 · Q8</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q8"></span></div>
+      <div class="q-body">
+        <img src="math_module1/8.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q8">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q8','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q8','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q8','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q8','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q8"><strong>Answer: A</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q9">
+      <div class="q-header"><span class="q-num-badge">M1 · Q9</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q9"></span></div>
+      <div class="q-body">
+        <img src="math_module1/9.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q9">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q9','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q9','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q9','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q9','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q9"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q10">
+      <div class="q-header"><span class="q-num-badge">M1 · Q10</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q10"></span></div>
+      <div class="q-body">
+        <img src="math_module1/10.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q10">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q10','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q10','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q10','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q10','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q10"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q11">
+      <div class="q-header"><span class="q-num-badge">M1 · Q11</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q11"></span></div>
+      <div class="q-body">
+        <img src="math_module1/11.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q11">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q11','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q11','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q11','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q11','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q11"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q12">
+      <div class="q-header"><span class="q-num-badge">M1 · Q12</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q12"></span></div>
+      <div class="q-body">
+        <img src="math_module1/12.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q12">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q12','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q12','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q12','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q12','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q12"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q13">
+      <div class="q-header"><span class="q-num-badge">M1 · Q13</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m1q13"></span></div>
+      <div class="q-body">
+        <img src="math_module1/13.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q13">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q13" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q13')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q13"><strong>Answer: 25</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q14">
+      <div class="q-header"><span class="q-num-badge">M1 · Q14</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m1q14"></span></div>
+      <div class="q-body">
+        <img src="math_module1/14.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q14">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q14" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q14')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q14"><strong>Answer: 6</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q15">
+      <div class="q-header"><span class="q-num-badge">M1 · Q15</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q15"></span></div>
+      <div class="q-body">
+        <img src="math_module1/15.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q15">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q15','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q15','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q15','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q15','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q15"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q16">
+      <div class="q-header"><span class="q-num-badge">M1 · Q16</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q16"></span></div>
+      <div class="q-body">
+        <img src="math_module1/16.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q16">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q16','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q16','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q16','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q16','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q16"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q17">
+      <div class="q-header"><span class="q-num-badge">M1 · Q17</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q17"></span></div>
+      <div class="q-body">
+        <img src="math_module1/17.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q17">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q17','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q17','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q17','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q17','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q17"><strong>Answer: A</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q18">
+      <div class="q-header"><span class="q-num-badge">M1 · Q18</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q18"></span></div>
+      <div class="q-body">
+        <img src="math_module1/18.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q18">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q18','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q18','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q18','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q18','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q18"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q19">
+      <div class="q-header"><span class="q-num-badge">M1 · Q19</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q19"></span></div>
+      <div class="q-body">
+        <img src="math_module1/19.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q19">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q19','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q19','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q19','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q19','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q19"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q20">
+      <div class="q-header"><span class="q-num-badge">M1 · Q20</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m1q20"></span></div>
+      <div class="q-body">
+        <img src="math_module1/20.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q20">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q20" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q20')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q20"><strong>Answer: 7</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q21">
+      <div class="q-header"><span class="q-num-badge">M1 · Q21</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m1q21"></span></div>
+      <div class="q-body">
+        <img src="math_module1/21.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q21">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q21" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q21')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q21"><strong>Answer: 182</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q22">
+      <div class="q-header"><span class="q-num-badge">M1 · Q22</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q22"></span></div>
+      <div class="q-body">
+        <img src="math_module1/22.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q22">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q22','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q22','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q22','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q22','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q22"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q23">
+      <div class="q-header"><span class="q-num-badge">M1 · Q23</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q23"></span></div>
+      <div class="q-body">
+        <img src="math_module1/23.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q23">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q23','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q23','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q23','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q23','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q23"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q24">
+      <div class="q-header"><span class="q-num-badge">M1 · Q24</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q24"></span></div>
+      <div class="q-body">
+        <img src="math_module1/24.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q24">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q24','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q24','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q24','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q24','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q24"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q25">
+      <div class="q-header"><span class="q-num-badge">M1 · Q25</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q25"></span></div>
+      <div class="q-body">
+        <img src="math_module1/25.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q25">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q25','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q25','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q25','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q25','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q25"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q26">
+      <div class="q-header"><span class="q-num-badge">M1 · Q26</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m1q26"></span></div>
+      <div class="q-body">
+        <img src="math_module1/26.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q26">
+        <div class="options">
+          <div class="option" onclick="selectMC('m1q26','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m1q26','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m1q26','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m1q26','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m1q26"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m1q27">
+      <div class="q-header"><span class="q-num-badge">M1 · Q27</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m1q27"></span></div>
+      <div class="q-body">
+        <img src="math_module1/27.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q27">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m1q27" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m1q27')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m1q27"><strong>Answer: 3</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="module-section" id="mod2">
+    <div class="module-header"><h2>Math — Module 2</h2><span>27 questions</span></div>
+    
+    <div class="question-card" id="m2q1">
+      <div class="q-header"><span class="q-num-badge">M2 · Q1</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q1"></span></div>
+      <div class="q-body">
+        <img src="math_module2/1.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q1">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q1','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q1','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q1','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q1','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q1"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q2">
+      <div class="q-header"><span class="q-num-badge">M2 · Q2</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q2"></span></div>
+      <div class="q-body">
+        <img src="math_module2/2.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q2">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q2','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q2','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q2','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q2','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q2"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q3">
+      <div class="q-header"><span class="q-num-badge">M2 · Q3</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q3"></span></div>
+      <div class="q-body">
+        <img src="math_module2/3.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q3">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q3','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q3','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q3','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q3','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q3"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q4">
+      <div class="q-header"><span class="q-num-badge">M2 · Q4</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q4"></span></div>
+      <div class="q-body">
+        <img src="math_module2/4.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q4">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q4','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q4','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q4','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q4','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q4"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q5">
+      <div class="q-header"><span class="q-num-badge">M2 · Q5</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q5"></span></div>
+      <div class="q-body">
+        <img src="math_module2/5.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q5">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q5','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q5','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q5','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q5','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q5"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q6">
+      <div class="q-header"><span class="q-num-badge">M2 · Q6</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m2q6"></span></div>
+      <div class="q-body">
+        <img src="math_module2/6.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q6">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m2q6" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m2q6')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m2q6"><strong>Answer: 9</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q7">
+      <div class="q-header"><span class="q-num-badge">M2 · Q7</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m2q7"></span></div>
+      <div class="q-body">
+        <img src="math_module2/7.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q7">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m2q7" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m2q7')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m2q7"><strong>Answer: 68</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q8">
+      <div class="q-header"><span class="q-num-badge">M2 · Q8</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q8"></span></div>
+      <div class="q-body">
+        <img src="math_module2/8.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q8">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q8','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q8','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q8','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q8','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q8"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q9">
+      <div class="q-header"><span class="q-num-badge">M2 · Q9</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q9"></span></div>
+      <div class="q-body">
+        <img src="math_module2/9.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q9">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q9','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q9','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q9','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q9','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q9"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q10">
+      <div class="q-header"><span class="q-num-badge">M2 · Q10</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q10"></span></div>
+      <div class="q-body">
+        <img src="math_module2/10.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q10">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q10','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q10','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q10','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q10','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q10"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q11">
+      <div class="q-header"><span class="q-num-badge">M2 · Q11</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q11"></span></div>
+      <div class="q-body">
+        <img src="math_module2/11.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q11">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q11','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q11','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q11','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q11','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q11"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q12">
+      <div class="q-header"><span class="q-num-badge">M2 · Q12</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q12"></span></div>
+      <div class="q-body">
+        <img src="math_module2/12.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q12">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q12','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q12','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q12','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q12','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q12"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q13">
+      <div class="q-header"><span class="q-num-badge">M2 · Q13</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m2q13"></span></div>
+      <div class="q-body">
+        <img src="math_module2/13.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q13">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m2q13" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m2q13')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m2q13"><strong>Answer: 986</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q14">
+      <div class="q-header"><span class="q-num-badge">M2 · Q14</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m2q14"></span></div>
+      <div class="q-body">
+        <img src="math_module2/14.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q14">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m2q14" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m2q14')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m2q14"><strong>Answer: 24</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q15">
+      <div class="q-header"><span class="q-num-badge">M2 · Q15</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q15"></span></div>
+      <div class="q-body">
+        <img src="math_module2/15.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q15">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q15','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q15','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q15','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q15','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q15"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q16">
+      <div class="q-header"><span class="q-num-badge">M2 · Q16</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q16"></span></div>
+      <div class="q-body">
+        <img src="math_module2/16.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q16">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q16','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q16','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q16','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q16','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q16"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q17">
+      <div class="q-header"><span class="q-num-badge">M2 · Q17</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q17"></span></div>
+      <div class="q-body">
+        <img src="math_module2/17.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q17">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q17','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q17','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q17','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q17','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q17"><strong>Answer: A</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q18">
+      <div class="q-header"><span class="q-num-badge">M2 · Q18</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q18"></span></div>
+      <div class="q-body">
+        <img src="math_module2/18.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q18">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q18','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q18','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q18','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q18','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q18"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q19">
+      <div class="q-header"><span class="q-num-badge">M2 · Q19</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q19"></span></div>
+      <div class="q-body">
+        <img src="math_module2/19.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q19">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q19','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q19','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q19','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q19','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q19"><strong>Answer: A</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q20">
+      <div class="q-header"><span class="q-num-badge">M2 · Q20</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m2q20"></span></div>
+      <div class="q-body">
+        <img src="math_module2/20.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q20">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m2q20" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m2q20')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m2q20"><strong>Answer: 46</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q21">
+      <div class="q-header"><span class="q-num-badge">M2 · Q21</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m2q21"></span></div>
+      <div class="q-body">
+        <img src="math_module2/21.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q21">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m2q21" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m2q21')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m2q21"><strong>Answer: 1.8</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q22">
+      <div class="q-header"><span class="q-num-badge">M2 · Q22</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q22"></span></div>
+      <div class="q-body">
+        <img src="math_module2/22.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q22">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q22','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q22','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q22','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q22','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q22"><strong>Answer: A</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q23">
+      <div class="q-header"><span class="q-num-badge">M2 · Q23</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q23"></span></div>
+      <div class="q-body">
+        <img src="math_module2/23.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q23">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q23','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q23','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q23','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q23','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q23"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q24">
+      <div class="q-header"><span class="q-num-badge">M2 · Q24</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q24"></span></div>
+      <div class="q-body">
+        <img src="math_module2/24.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q24">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q24','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q24','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q24','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q24','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q24"><strong>Answer: C</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q25">
+      <div class="q-header"><span class="q-num-badge">M2 · Q25</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q25"></span></div>
+      <div class="q-body">
+        <img src="math_module2/25.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q25">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q25','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q25','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q25','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q25','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q25"><strong>Answer: B</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q26">
+      <div class="q-header"><span class="q-num-badge">M2 · Q26</span><span class="q-type">Multiple Choice</span><span class="q-status" id="s-m2q26"></span></div>
+      <div class="q-body">
+        <img src="math_module2/26.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q26">
+        <div class="options">
+          <div class="option" onclick="selectMC('m2q26','A',this)"><span class="option-letter">A</span></div>
+          <div class="option" onclick="selectMC('m2q26','B',this)"><span class="option-letter">B</span></div>
+          <div class="option" onclick="selectMC('m2q26','C',this)"><span class="option-letter">C</span></div>
+          <div class="option" onclick="selectMC('m2q26','D',this)"><span class="option-letter">D</span></div>
+        </div>
+        <div class="explanation" id="exp-m2q26"><strong>Answer: D</strong></div>
+      </div>
+    </div>
+    <div class="question-card" id="m2q27">
+      <div class="q-header"><span class="q-num-badge">M2 · Q27</span><span class="q-type">Grid-In</span><span class="q-status" id="s-m2q27"></span></div>
+      <div class="q-body">
+        <img src="math_module2/27.png" style="max-width:100%;border-radius:8px;border:1px solid #ddd9d0;display:block;margin-bottom:14px;" alt="Q27">
+        <div class="grid-input-wrap">
+          <input type="text" class="grid-input" id="gi-m2q27" placeholder="Your answer">
+          <button class="check-btn" onclick="checkGrid('m2q27')">Check</button>
+        </div>
+        <div class="explanation" id="exp-m2q27"><strong>Answer: 168</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="final-score" id="final-score">
+    <div class="big" id="final-num">—</div>
+    <div style="font-size:14px;opacity:0.75;margin-top:4px">out of 54 correct</div>
+    <div style="font-size:13px;opacity:0.6;margin-top:8px" id="final-pct"></div>
+    <button class="reset-btn" onclick="resetAll()">↺ Try Again</button>
+  </div>
+</div>
+<script>
+const ANSWERS = {
+  "m1q1": "C",
+  "m1q2": "C",
+  "m1q3": "D",
+  "m1q4": "D",
+  "m1q5": "A",
+  "m1q6": ".2",
+  "m1q7": "240",
+  "m1q8": "A",
+  "m1q9": "B",
+  "m1q10": "B",
+  "m1q11": "B",
+  "m1q12": "D",
+  "m1q13": "25",
+  "m1q14": "6",
+  "m1q15": "C",
+  "m1q16": "D",
+  "m1q17": "A",
+  "m1q18": "D",
+  "m1q19": "C",
+  "m1q20": "7",
+  "m1q21": "182",
+  "m1q22": "D",
+  "m1q23": "B",
+  "m1q24": "C",
+  "m1q25": "C",
+  "m1q26": "B",
+  "m1q27": "3",
+  "m2q1": "C",
+  "m2q2": "C",
+  "m2q3": "D",
+  "m2q4": "C",
+  "m2q5": "D",
+  "m2q6": "9",
+  "m2q7": "68",
+  "m2q8": "B",
+  "m2q9": "D",
+  "m2q10": "D",
+  "m2q11": "C",
+  "m2q12": "B",
+  "m2q13": "986",
+  "m2q14": "24",
+  "m2q15": "D",
+  "m2q16": "D",
+  "m2q17": "A",
+  "m2q18": "B",
+  "m2q19": "A",
+  "m2q20": "46",
+  "m2q21": "1.8",
+  "m2q22": "A",
+  "m2q23": "B",
+  "m2q24": "C",
+  "m2q25": "B",
+  "m2q26": "D",
+  "m2q27": "168"
+};
+let score=0,answered=0;
+function updateScore(){
+  document.getElementById('live-score').textContent=score+' / '+answered;
+  document.getElementById('prog-bar').style.width=(answered/54*100)+'%';
+  if(answered===54){document.getElementById('final-score').classList.add('show');document.getElementById('final-num').textContent=score;document.getElementById('final-pct').textContent=Math.round(score/54*100)+'% correct';}
+}
+function selectMC(qid,choice,el){
+  const correct=ANSWERS[qid];
+  if(document.querySelector('#'+qid+' .option.correct'))return;
+  answered++;
+  document.getElementById('exp-'+qid).classList.add('show');
+  document.getElementById('s-'+qid).textContent=choice===correct?'✓':'✗';
+  if(choice===correct){el.classList.add('correct');score++;}
+  else{el.classList.add('wrong');document.querySelectorAll('#'+qid+' .option').forEach(o=>{if(o.querySelector('.option-letter').textContent===correct)o.classList.add('correct');});}
+  updateScore();
+}
+function checkGrid(qid){
+  const input=document.getElementById('gi-'+qid);
+  if(input.classList.contains('correct')||input.classList.contains('wrong'))return;
+  const correct=ANSWERS[qid].toString().replace(/,/g,'');
+  const val=input.value.trim().replace(/,/g,'');
+  const ok=val===correct||parseFloat(val)===parseFloat(correct);
+  answered++;
+  document.getElementById('exp-'+qid).classList.add('show');
+  document.getElementById('s-'+qid).textContent=ok?'✓':'✗';
+  input.classList.add(ok?'correct':'wrong');
+  if(ok)score++;
+  updateScore();
+}
+function switchModule(n){
+  document.querySelectorAll('.module-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('mod'+n).classList.add('active');
+  document.querySelectorAll('.tab')[n-1].classList.add('active');
+}
+function resetAll(){
+  score=0;answered=0;
+  document.querySelectorAll('.option').forEach(o=>o.classList.remove('correct','wrong'));
+  document.querySelectorAll('.grid-input').forEach(i=>{i.value='';i.classList.remove('correct','wrong');});
+  document.querySelectorAll('.explanation').forEach(e=>e.classList.remove('show'));
+  document.querySelectorAll('.q-status').forEach(s=>s.textContent='');
+  document.getElementById('final-score').classList.remove('show');
+  updateScore();
+}
+</script>
+</body>
+</html>
